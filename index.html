@@ -131,6 +131,9 @@
     font-size: 1.2rem;
     border-bottom: 2px solid #E3B62E;
     padding-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .legend-item {
@@ -161,6 +164,44 @@
   
   .legend-icon:hover {
     transform: scale(1.1);
+  }
+  
+  /* Botão de minimizar */
+  .minimize-btn {
+    background: none;
+    border: none;
+    color: #f7d154;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+  
+  .minimize-btn:hover {
+    background-color: rgba(227, 182, 46, 0.2);
+    transform: scale(1.1);
+  }
+  
+  /* Estado minimizado da legenda */
+  .legend.minimized {
+    padding: 10px 15px;
+    max-width: 200px;
+  }
+  
+  .legend.minimized .legend-content {
+    display: none;
+  }
+  
+  .legend.minimized h4 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
   }
   
   /* Cores para diferentes tipos de pontos */
@@ -261,6 +302,11 @@
       padding: 14px 18px;
     }
     
+    .legend.minimized {
+      max-width: 180px;
+      padding: 8px 12px;
+    }
+    
     .legend-icon {
       width: 20px;
       height: 20px;
@@ -275,6 +321,10 @@
       left: auto;
       margin: 15px auto;
       max-width: 90%;
+    }
+    
+    .legend.minimized {
+      max-width: 70%;
     }
     
     #map {
@@ -298,15 +348,19 @@
   </div>
   
   <div id="map">
-    <div class="legend">
-      <h4>Legenda dos Pontos</h4>
-      <div class="legend-item"><div class="legend-icon restaurante">R</div>Restaurante</div>
-      <div class="legend-item"><div class="legend-icon piscina">P</div>Piscina Externa</div>
-      <div class="legend-item"><div class="legend-icon recepcao">R</div>Recepção</div>
-      <div class="legend-item"><div class="legend-icon cabanas">C</div>Cabanas</div>
-      <div class="legend-item"><div class="legend-icon solar">S</div>Solar</div>
-      <div class="legend-item"><div class="legend-icon lagoa">L</div>Lagoa da Conceição</div>
-      <div class="legend-item"><div class="legend-icon acesso">A</div>Acesso Praia Mole</div>
+    <div class="legend" id="legend">
+      <h4>Legenda dos Pontos
+        <button class="minimize-btn" id="minimize-btn" title="Minimizar legenda">−</button>
+      </h4>
+      <div class="legend-content">
+        <div class="legend-item"><div class="legend-icon restaurante">R</div>Restaurante</div>
+        <div class="legend-item"><div class="legend-icon piscina">P</div>Piscina Externa</div>
+        <div class="legend-item"><div class="legend-icon recepcao">R</div>Recepção</div>
+        <div class="legend-item"><div class="legend-icon cabanas">C</div>Cabanas</div>
+        <div class="legend-item"><div class="legend-icon solar">S</div>Solar</div>
+        <div class="legend-item"><div class="legend-icon lagoa">L</div>Lagoa da Conceição</div>
+        <div class="legend-item"><div class="legend-icon acesso">A</div>Acesso Praia Mole</div>
+      </div>
     </div>
   </div>
 
@@ -478,6 +532,24 @@
   // Ajustar o zoom para mostrar todos os marcadores
   var group = new L.featureGroup(pontosInteresse.map(p => L.marker(p.coordenadas)));
   map.fitBounds(group.getBounds().pad(0.1));
+
+  // Função para minimizar/expandir a legenda
+  document.getElementById('minimize-btn').addEventListener('click', function() {
+    var legend = document.getElementById('legend');
+    var btn = document.getElementById('minimize-btn');
+    
+    if (legend.classList.contains('minimized')) {
+      // Expandir a legenda
+      legend.classList.remove('minimized');
+      btn.textContent = '−';
+      btn.title = 'Minimizar legenda';
+    } else {
+      // Minimizar a legenda
+      legend.classList.add('minimized');
+      btn.textContent = '+';
+      btn.title = 'Expandir legenda';
+    }
+  });
 </script>
 </body>
 </html>
