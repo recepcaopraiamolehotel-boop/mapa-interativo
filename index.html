@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Praia Mole Hotel - Mapa Interativo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Praia Mole Hotel - Mapa Mobile</title>
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <!-- Leaflet Routing Machine CSS -->
@@ -16,14 +16,10 @@
     margin: 0;
     padding: 0;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
   }
   
   body, html {
     height: 100%;
-    width: 100%;
     font-family: 'Montserrat', sans-serif;
     background: linear-gradient(135deg, #1a2e45 0%, #2c4a6e 50%, #E3B62E 100%);
     display: flex;
@@ -31,7 +27,7 @@
     align-items: center;
     color: #ffffff;
     overflow: hidden;
-    position: fixed;
+    touch-action: manipulation;
   }
   
   .header {
@@ -41,10 +37,12 @@
     background: rgba(26, 46, 69, 0.95);
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
     border-bottom: 3px solid #E3B62E;
     position: relative;
+    overflow: hidden;
     flex-shrink: 0;
-    z-index: 1000;
+    z-index: 10;
   }
   
   .header::before {
@@ -62,15 +60,14 @@
     color: #ffffff;
     font-family: 'Playfair Display', serif;
     font-weight: 600;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     letter-spacing: 0.5px;
-    line-height: 1.2;
   }
   
   .subtitle {
     margin: 5px 0 0;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: #f7d154;
     font-weight: 300;
     letter-spacing: 0.3px;
@@ -78,78 +75,63 @@
   
   .map-container {
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 120px);
     position: relative;
+    margin-bottom: 0;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
   }
   
   #map {
     width: 100%;
     height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    flex-grow: 1;
+  }
+  
+  .leaflet-control-layers {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    font-weight: 500;
+    color: #1a2e45;
+    border: 1px solid rgba(227, 182, 46, 0.3);
+    font-size: 14px;
+  }
+  
+  .leaflet-control-layers-toggle {
+    background-color: #1a2e45;
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  .legend {
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-  }
-  
-  /* CONTROLES MOBILE OTIMIZADOS */
-  .mobile-controls {
-    position: absolute;
-    bottom: 20px;
-    right: 15px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .mobile-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(26, 46, 69, 0.95);
-    backdrop-filter: blur(15px);
-    border: 2px solid #E3B62E;
-    color: #f7d154;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
-  }
-  
-  .mobile-btn:active {
-    transform: scale(0.95);
-    background: rgba(44, 74, 110, 0.95);
-  }
-  
-  .legend-mobile {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
     background: rgba(26, 46, 69, 0.95);
     backdrop-filter: blur(15px);
     padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
     font-size: 14px;
     color: #ffffff;
     font-weight: 500;
     z-index: 1000;
-    border: 2px solid rgba(227, 182, 46, 0.4);
+    border: 1px solid rgba(227, 182, 46, 0.4);
     max-height: 40vh;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
   }
   
-  .legend-mobile h4 {
-    margin: 0 0 12px 0;
+  .legend h4 {
+    margin: 0 0 10px 0;
     font-weight: 600;
     color: #f7d154;
     font-family: 'Playfair Display', serif;
@@ -159,91 +141,118 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    background: rgba(26, 46, 69, 0.95);
+    z-index: 1;
   }
   
-  .legend-content-mobile {
+  .legend-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
   
-  .legend-paragraph-mobile h5 {
+  .legend-paragraph h5 {
     color: #f7d154;
     margin-bottom: 8px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 1px solid rgba(227, 182, 46, 0.3);
-    padding-bottom: 4px;
+    padding-bottom: 5px;
   }
   
-  .legend-item-mobile {
+  .legend-item {
     display: flex;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     transition: all 0.2s ease;
     cursor: pointer;
     padding: 6px 8px;
     border-radius: 8px;
+    min-height: 36px;
   }
   
-  .legend-item-mobile:active {
-    transform: translateX(5px);
+  .legend-item:active {
+    transform: translateX(3px);
     background: rgba(227, 182, 46, 0.2);
   }
   
-  .legend-icon-mobile {
-    width: 22px;
-    height: 22px;
+  .legend-icon {
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     margin-right: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     font-weight: bold;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
     flex-shrink: 0;
   }
   
-  .minimize-btn-mobile {
+  .minimize-btn {
     background: none;
     border: none;
     color: #f7d154;
     font-size: 1.2rem;
     cursor: pointer;
     padding: 0;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     transition: all 0.2s ease;
+    flex-shrink: 0;
   }
   
-  .legend-icon-mobile.restaurante { background: linear-gradient(135deg, #3498db, #2980b9); }
-  .legend-icon-mobile.piscina { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-  .legend-icon-mobile.recepcao { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-  .legend-icon-mobile.cabanas { background: linear-gradient(135deg, #f39c12, #e67e22); }
-  .legend-icon-mobile.solar { background: linear-gradient(135deg, #1abc9c, #16a085); }
-  .legend-icon-mobile.lagoa { background: linear-gradient(135deg, #34495e, #2c3e50); }
-  .legend-icon-mobile.acesso { background: linear-gradient(135deg, #e67e22, #d35400); }
-  .legend-icon-mobile.campo { background: linear-gradient(135deg, #e84393, #fd79a8); }
-  .legend-icon-mobile.tenis { background: linear-gradient(135deg, #00b894, #00cec9); }
+  .minimize-btn:active {
+    background-color: rgba(227, 182, 46, 0.2);
+    transform: scale(1.1);
+  }
   
-  /* PAINEL MOBILE */
-  .info-panel-mobile {
+  .legend.minimized {
+    padding: 10px 15px;
+    max-height: 50px;
+  }
+  
+  .legend.minimized .legend-content {
+    display: none;
+  }
+  
+  .legend.minimized h4 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .legend-icon.restaurante { background: linear-gradient(135deg, #3498db, #2980b9); }
+  .legend-icon.piscina { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+  .legend-icon.recepcao { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+  .legend-icon.cabanas { background: linear-gradient(135deg, #f39c12, #e67e22); }
+  .legend-icon.solar { background: linear-gradient(135deg, #1abc9c, #16a085); }
+  .legend-icon.lagoa { background: linear-gradient(135deg, #34495e, #2c3e50); }
+  .legend-icon.acesso { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .legend-icon.campo { background: linear-gradient(135deg, #e84393, #fd79a8); }
+  .legend-icon.tenis { background: linear-gradient(135deg, #00b894, #00cec9); }
+  
+  .info-panel {
     position: fixed;
+    top: auto;
     bottom: 0;
-    left: 0;
     right: 0;
+    width: 100%;
     height: 70vh;
     background: rgba(26, 46, 69, 0.98);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(15px);
     box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
+    border-left: none;
     border-top: 3px solid #E3B62E;
     transform: translateY(100%);
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -254,60 +263,46 @@
     border-radius: 20px 20px 0 0;
   }
   
-  .info-panel-mobile.active {
+  .info-panel.active {
     transform: translateY(0);
   }
   
-  .panel-overlay-mobile {
+  .panel-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
     z-index: 9999;
   }
   
-  .panel-overlay-mobile.active {
+  .panel-overlay.active {
     opacity: 1;
     visibility: visible;
   }
   
-  .panel-header-mobile {
-    padding: 20px 20px 15px;
+  .panel-header {
+    padding: 20px;
     border-bottom: 2px solid rgba(227, 182, 46, 0.3);
     background: rgba(44, 74, 110, 0.6);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
   }
   
-  .panel-header-mobile::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 4px;
-    background: rgba(227, 182, 46, 0.5);
-    border-radius: 2px;
-  }
-  
-  .panel-title-mobile {
+  .panel-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
     font-weight: 600;
     color: #f7d154;
     margin: 0;
-    flex: 1;
   }
   
-  .close-panel-mobile {
+  .close-panel {
     background: none;
     border: none;
     color: #f7d154;
@@ -321,23 +316,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
   }
   
-  .panel-content-mobile {
+  .close-panel:active {
+    background-color: rgba(227, 182, 46, 0.2);
+    transform: scale(1.1);
+  }
+  
+  .panel-content {
     padding: 20px;
     flex-grow: 1;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     color: #ffffff;
+    -webkit-overflow-scrolling: touch;
   }
   
-  .panel-icon-display-mobile {
+  .panel-icon-display {
     text-align: center;
     margin-bottom: 15px;
   }
   
-  .panel-icon-large-mobile {
+  .panel-icon-large {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -347,15 +346,15 @@
     font-size: 1.5rem;
     color: white;
     font-weight: bold;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     margin-bottom: 10px;
   }
   
-  .info-section-mobile {
+  .info-section {
     margin-bottom: 15px;
   }
   
-  .info-label-mobile {
+  .info-label {
     font-weight: 600;
     color: #f7d154;
     margin-bottom: 6px;
@@ -364,20 +363,20 @@
     letter-spacing: 0.5px;
   }
   
-  .info-content-mobile {
+  .info-content {
     color: #e8f4f8;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     line-height: 1.4;
   }
   
-  .info-hours-mobile {
+  .info-hours {
     background: rgba(227, 182, 46, 0.1);
     padding: 12px;
     border-radius: 8px;
-    border-left: 3px solid #E3B62E;
+    border-left: 4px solid #E3B62E;
   }
   
-  .info-coordinates-mobile {
+  .info-coordinates {
     background: rgba(52, 73, 94, 0.3);
     padding: 12px;
     border-radius: 8px;
@@ -385,22 +384,22 @@
     font-size: 0.8rem;
   }
   
-  /* BOTÕES DE AÇÃO MOBILE */
-  .action-buttons-mobile {
+  /* BOTÕES DE AÇÃO */
+  .action-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-top: 15px;
   }
   
-  .location-btn-mobile, .navigation-btn-mobile {
+  .location-btn, .navigation-btn {
     background: linear-gradient(135deg, #E3B62E, #f7d154);
     color: #1a2e45;
     border: none;
     padding: 14px 20px;
-    border-radius: 12px;
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -408,105 +407,51 @@
     justify-content: center;
     gap: 8px;
     box-shadow: 0 4px 15px rgba(227, 182, 46, 0.3);
+    min-height: 50px;
   }
   
-  .navigation-btn-mobile {
+  .navigation-btn {
     background: linear-gradient(135deg, #3498db, #2980b9);
     color: white;
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
   }
   
-  .location-btn-mobile:active, .navigation-btn-mobile:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 8px rgba(227, 182, 46, 0.4);
+  .location-btn:active, .navigation-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(227, 182, 46, 0.4);
   }
   
-  /* INDICADOR DE LOCALIZAÇÃO MOBILE */
-  .location-indicator-mobile {
-    position: absolute;
-    top: 80px;
-    right: 15px;
-    background: rgba(26, 46, 69, 0.95);
-    backdrop-filter: blur(15px);
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-    color: #ffffff;
-    font-size: 13px;
-    z-index: 1000;
-    border: 2px solid rgba(227, 182, 46, 0.4);
-    max-width: 200px;
+  .location-btn:active {
+    background: linear-gradient(135deg, #f7d154, #E3B62E);
   }
   
-  .location-indicator-mobile h4 {
-    color: #f7d154;
-    margin-bottom: 6px;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  .navigation-btn:active {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+    box-shadow: 0 2px 10px rgba(52, 152, 219, 0.4);
   }
   
-  .location-status-mobile {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
+  .location-btn i, .navigation-btn i {
+    font-size: 1.1rem;
   }
   
-  .status-dot-mobile {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #e74c3c;
-    flex-shrink: 0;
-  }
-  
-  .status-dot-mobile.active {
-    background: #2ecc71;
-    animation: pulse 2s infinite;
-  }
-  
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-  }
-  
-  .get-location-btn-mobile {
-    background: rgba(227, 182, 46, 0.2);
-    color: #f7d154;
-    border: 1px solid rgba(227, 182, 46, 0.4);
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: 100%;
-  }
-  
-  .get-location-btn-mobile:active {
-    background: rgba(227, 182, 46, 0.3);
-  }
-  
-  /* CONTROLE DE ROTA MOBILE */
+  /* CONTROLE DE ROTA CUSTOMIZADO */
   .leaflet-routing-container {
     background: rgba(26, 46, 69, 0.95) !important;
     backdrop-filter: blur(15px);
-    border: 2px solid rgba(227, 182, 46, 0.4) !important;
-    border-radius: 15px !important;
+    border: 1px solid rgba(227, 182, 46, 0.4) !important;
+    border-radius: 12px !important;
     color: #ffffff !important;
     font-family: 'Montserrat', sans-serif !important;
-    max-height: 40vh !important;
+    max-height: 60vh !important;
     width: 90vw !important;
-    margin: 10px !important;
-    font-size: 14px !important;
+    left: 5vw !important;
+    font-size: 14px;
   }
   
   .leaflet-routing-alt {
     background: transparent !important;
     color: #ffffff !important;
-    max-height: 30vh !important;
+    max-height: 40vh !important;
     overflow-y: auto !important;
   }
   
@@ -523,196 +468,278 @@
   
   .leaflet-routing-alt table {
     color: #e8f4f8 !important;
-    font-size: 0.8rem !important;
+    font-size: 0.8rem;
   }
   
   .leaflet-routing-collapse-btn {
     color: #f7d154 !important;
-    font-size: 1.2rem !important;
+    font-size: 1.2rem;
   }
   
-  /* BOTÃO DE FULLSCREEN */
-  .fullscreen-btn {
+  .leaflet-routing-geocoders {
+    margin-bottom: 10px !important;
+  }
+  
+  .leaflet-routing-geocoder {
+    border-radius: 8px !important;
+    border: 1px solid rgba(227, 182, 46, 0.3) !important;
+  }
+  
+  .leaflet-routing-geocoder input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-size: 14px;
+    height: 40px;
+  }
+  
+  .leaflet-routing-geocoder input::placeholder {
+    color: #bdc3c7 !important;
+  }
+  
+  .leaflet-routing-icon {
+    background-color: #E3B62E !important;
+  }
+  
+  /* INDICADOR DE LOCALIZAÇÃO */
+  .location-indicator {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    z-index: 1000;
+    top: 10px;
+    right: 10px;
+    left: 10px;
     background: rgba(26, 46, 69, 0.95);
     backdrop-filter: blur(15px);
-    border: 2px solid #E3B62E;
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    font-size: 14px;
+    z-index: 1000;
+    border: 1px solid rgba(227, 182, 46, 0.4);
+  }
+  
+  .location-indicator h4 {
     color: #f7d154;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
+    gap: 8px;
+  }
+  
+  .location-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e74c3c;
+  }
+  
+  .status-dot.active {
+    background: #2ecc71;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  
+  .get-location-btn {
+    background: rgba(227, 182, 46, 0.2);
+    color: #f7d154;
+    border: 1px solid rgba(227, 182, 46, 0.4);
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    width: 100%;
+    min-height: 40px;
   }
   
-  .fullscreen-btn:active {
-    transform: scale(0.95);
-    background: rgba(44, 74, 110, 0.95);
+  .get-location-btn:active {
+    background: rgba(227, 182, 46, 0.3);
   }
   
-  /* ESTADOS DE ERRO E CARREGAMENTO */
-  .loading-overlay {
+  .leaflet-control-zoom a {
+    background: rgba(26, 46, 69, 0.9) !important;
+    color: #f7d154 !important;
+    border: 1px solid rgba(227, 182, 46, 0.4) !important;
+    backdrop-filter: blur(10px);
+    width: 40px !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    font-size: 18px !important;
+  }
+  
+  .leaflet-control-zoom a:active {
+    background: rgba(44, 74, 110, 0.9) !important;
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 10px 5px;
+    width: 100%;
+    background: rgba(26, 46, 69, 0.9);
+    backdrop-filter: blur(10px);
+    font-size: 0.8rem;
+    color: #bdc3c7;
+    border-top: 1px solid rgba(227, 182, 46, 0.3);
+    flex-shrink: 0;
+  }
+  
+  /* Melhorias para telas muito pequenas */
+  @media (max-width: 360px) {
+    h1 { font-size: 1.4rem; }
+    .subtitle { font-size: 0.75rem; }
+    .map-container { height: calc(100vh - 110px); }
+    .legend { padding: 12px; font-size: 13px; }
+    .legend h4 { font-size: 1rem; }
+    .legend-icon { width: 24px; height: 24px; font-size: 10px; margin-right: 8px; }
+    .legend-content { grid-template-columns: 1fr; }
+    .info-panel { height: 75vh; }
+    .panel-header { padding: 15px; }
+    .panel-title { font-size: 1.1rem; }
+    .panel-content { padding: 15px; }
+    .panel-icon-large { width: 50px; height: 50px; font-size: 1.3rem; }
+    .location-btn, .navigation-btn { padding: 12px 15px; font-size: 0.9rem; min-height: 45px; }
+  }
+  
+  /* Melhorias para orientação paisagem */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .header { padding: 10px; margin-bottom: 5px; }
+    h1 { font-size: 1.3rem; }
+    .subtitle { font-size: 0.7rem; margin-top: 2px; }
+    .map-container { height: calc(100vh - 80px); }
+    .legend { max-height: 30vh; }
+    .info-panel { height: 85vh; }
+    .footer { padding: 5px; font-size: 0.7rem; }
+  }
+  
+  /* Melhorias para tablets */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .map-container { height: calc(100vh - 130px); }
+    .legend { max-width: 80%; left: 10%; right: 10%; }
+  }
+  
+  /* Aviso para desktop */
+  .desktop-message {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(26, 46, 69, 0.9);
-    backdrop-filter: blur(10px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    background: rgba(26, 46, 69, 0.95);
     z-index: 10000;
-    color: #f7d154;
-  }
-  
-  .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(227, 182, 46, 0.3);
-    border-top: 4px solid #E3B62E;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .error-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(231, 76, 60, 0.9);
-    color: white;
-    padding: 20px;
-    border-radius: 15px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    z-index: 1000;
-    max-width: 80%;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    padding: 20px;
   }
   
-  .retry-btn {
-    background: #E3B62E;
+  .desktop-message h2 {
+    font-family: 'Playfair Display', serif;
+    color: #f7d154;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  
+  .desktop-message p {
+    margin-bottom: 30px;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+  
+  .desktop-link {
+    display: inline-block;
+    background: linear-gradient(135deg, #E3B62E, #f7d154);
     color: #1a2e45;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    margin-top: 10px;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 10px;
     font-weight: 600;
-    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
   }
   
-  /* OCULTAR ELEMENTOS DO LEAFLET EM MOBILE */
-  .leaflet-control-zoom {
-    display: none !important;
-  }
-  
-  .leaflet-control-layers {
-    display: none !important;
-  }
-  
-  /* SCROLLBAR PERSONALIZADA */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #E3B62E;
-    border-radius: 3px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #f7d154;
+  .desktop-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(227, 182, 46, 0.4);
   }
 </style>
 </head>
 <body>
-  <!-- Tela de Carregamento -->
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-spinner"></div>
-    <p>Carregando mapa...</p>
+  <!-- Aviso para desktop (será mostrado apenas em dispositivos não móveis) -->
+  <div class="desktop-message" id="desktop-message">
+    <h2>Versão Mobile</h2>
+    <p>Esta é a versão otimizada para dispositivos móveis do Mapa Interativo do Praia Mole Hotel.</p>
+    <p>Para uma experiência completa, acesse a <a href="#" class="desktop-link" id="desktop-redirect">versão para desktop</a> em seu computador.</p>
+    <p style="margin-top: 20px; font-size: 0.9rem; color: #bdc3c7;">Se você está em um dispositivo móvel, pode continuar usando esta versão.</p>
   </div>
 
   <div class="header">
     <h1>Praia Mole Hotel</h1>
-    <p class="subtitle">Toque nos locais para ver informações e rotas</p>
+    <p class="subtitle">Descubra as belezas e comodidades do nosso resort à beira-mar</p>
   </div>
   
   <div class="map-container">
     <div id="map"></div>
-    
-    <!-- Botão Fullscreen -->
-    <button class="fullscreen-btn" id="fullscreen-btn" title="Tela Cheia">⛶</button>
-    
-    <!-- Legenda Mobile -->
-    <div class="legend-mobile" id="legend-mobile">
-      <h4>Pontos do Hotel
-        <button class="minimize-btn-mobile" id="minimize-btn-mobile" title="Minimizar">−</button>
+    <div class="legend" id="legend">
+      <h4>Legenda dos Pontos
+        <button class="minimize-btn" id="minimize-btn" title="Minimizar legenda">−</button>
       </h4>
-      <div class="legend-content-mobile">
-        <div class="legend-paragraph-mobile">
-          <h5>Comodidades</h5>
-          <div class="legend-item-mobile" data-type="restaurante"><div class="legend-icon-mobile restaurante">R</div>Restaurante</div>
-          <div class="legend-item-mobile" data-type="piscina"><div class="legend-icon-mobile piscina">P</div>Piscina</div>
-          <div class="legend-item-mobile" data-type="recepcao"><div class="legend-icon-mobile recepcao">R</div>Recepção</div>
-          <div class="legend-item-mobile" data-type="cabanas"><div class="legend-icon-mobile cabanas">C</div>Cabanas</div>
+      <div class="legend-content">
+        <div class="legend-paragraph">
+          <h5>Comodidades Principais</h5>
+          <div class="legend-item" data-type="restaurante"><div class="legend-icon restaurante">R</div>Restaurante Principal</div>
+          <div class="legend-item" data-type="piscina"><div class="legend-icon piscina">P</div>Piscina Externa</div>
+          <div class="legend-item" data-type="recepcao"><div class="legend-icon recepcao">R</div>Recepção</div>
+          <div class="legend-item" data-type="cabanas"><div class="legend-icon cabanas">C</div>Cabanas</div>
+          <div class="legend-item" data-type="solar"><div class="legend-icon solar">S</div>Solar</div>
         </div>
-        <div class="legend-paragraph-mobile">
-          <h5>Áreas</h5>
-          <div class="legend-item-mobile" data-type="solar"><div class="legend-icon-mobile solar">S</div>Solar</div>
-          <div class="legend-item-mobile" data-type="lagoa"><div class="legend-icon-mobile lagoa">L</div>Lagoa</div>
-          <div class="legend-item-mobile" data-type="acesso"><div class="legend-icon-mobile acesso">A</div>Acesso Praia</div>
-          <div class="legend-item-mobile" data-type="campo"><div class="legend-icon-mobile campo">C</div>Campo</div>
+        <div class="legend-paragraph">
+          <h5>Áreas e Acessos</h5>
+          <div class="legend-item" data-type="lagoa"><div class="legend-icon lagoa">L</div>Lagoa da Conceição</div>
+          <div class="legend-item" data-type="acesso"><div class="legend-icon acesso">A</div>Acesso Praia Mole</div>
+          <div class="legend-item" data-type="campo"><div class="legend-icon campo">C</div>Campo de Areia</div>
+          <div class="legend-item" data-type="tenis"><div class="legend-icon tenis">T</div>Campo de Tênis</div>
         </div>
       </div>
     </div>
     
-    <!-- Indicador de Localização Mobile -->
-    <div class="location-indicator-mobile" id="location-indicator-mobile">
-      <h4>📍 Sua Localização</h4>
-      <div class="location-status-mobile">
-        <div class="status-dot-mobile" id="status-dot-mobile"></div>
-        <span id="location-text-mobile">Toque para ativar</span>
+    <!-- Indicador de Localização -->
+    <div class="location-indicator" id="location-indicator">
+      <h4><i>📍</i> Sua Localização</h4>
+      <div class="location-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="location-text">Clique para ativar</span>
       </div>
-      <button class="get-location-btn-mobile" id="get-location-btn-mobile">Obter Localização</button>
-    </div>
-    
-    <!-- Controles Mobile -->
-    <div class="mobile-controls">
-      <button class="mobile-btn" id="location-btn-mobile" title="Minha Localização">📍</button>
-      <button class="mobile-btn" id="legend-toggle-btn" title="Legenda">📋</button>
-      <button class="mobile-btn" id="recenter-btn" title="Centralizar">🎯</button>
+      <button class="get-location-btn" id="get-location-btn">Obter Minha Localização</button>
     </div>
   </div>
 
-  <!-- Painel de Informações Mobile -->
-  <div class="panel-overlay-mobile" id="panel-overlay-mobile"></div>
+  <div class="footer">
+    <p>Praia Mole Hotel &copy; 2024 - Todos os direitos reservados</p>
+  </div>
+
+  <div class="panel-overlay" id="panel-overlay"></div>
   
-  <div class="info-panel-mobile" id="info-panel-mobile">
-    <div class="panel-header-mobile">
-      <h3 class="panel-title-mobile" id="panel-title-mobile">Informações</h3>
-      <button class="close-panel-mobile" id="close-panel-mobile" title="Fechar">×</button>
+  <div class="info-panel" id="info-panel">
+    <div class="panel-header">
+      <h3 class="panel-title" id="panel-title">Informações do Local</h3>
+      <button class="close-panel" id="close-panel" title="Fechar painel">×</button>
     </div>
-    <div class="panel-content-mobile" id="panel-content-mobile">
+    <div class="panel-content" id="panel-content">
       <!-- Conteúdo será inserido dinamicamente -->
     </div>
   </div>
@@ -723,209 +750,167 @@
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
 <script>
-  // Detectar se é mobile
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  // Detectar se é um dispositivo móvel
+  function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+  }
   
-  // Configurações iniciais
-  const mapCenter = [-27.6018, -48.4375];
-  const bounds = L.latLngBounds(
+  // Mostrar mensagem para desktop se não for dispositivo móvel
+  if (!isMobileDevice()) {
+    document.getElementById('desktop-message').style.display = 'flex';
+    document.getElementById('desktop-redirect').addEventListener('click', function(e) {
+      e.preventDefault();
+      // Aqui você pode redirecionar para a versão desktop
+      // Por exemplo: window.location.href = 'mapa-desktop.html';
+      alert('Redirecionando para a versão desktop...');
+    });
+  }
+
+  // Coordenadas do hotel e pontos de interesse
+  var mapCenter = [-27.6018, -48.4375];
+  
+  // Definir limites de navegação
+  var bounds = L.latLngBounds(
     L.latLng(-27.6035, -48.4420),
     L.latLng(-27.5995, -48.4340)
   );
 
-  // Variáveis globais
-  let map, currentPonto, userLocation, userMarker, userCircle, routingControl;
-  let isFullscreen = false;
-  let mapInitialized = false;
+  // Inicializar o mapa
+  var map = L.map('map', {
+    center: mapCenter,
+    zoom: 17,
+    zoomAnimation: true,
+    fadeAnimation: true,
+    maxZoom: 20,
+    minZoom: 16,
+    maxBounds: bounds,
+    maxBoundsViscosity: 1.0,
+    tap: false, // Melhora a responsividade em dispositivos móveis
+    touchZoom: true,
+    scrollWheelZoom: false // Desativa zoom com scroll para melhor experiência mobile
+  });
 
-  // Elementos da interface
-  const elements = {
-    loadingOverlay: document.getElementById('loading-overlay'),
-    map: document.getElementById('map'),
-    legendMobile: document.getElementById('legend-mobile'),
-    minimizeBtnMobile: document.getElementById('minimize-btn-mobile'),
-    locationIndicatorMobile: document.getElementById('location-indicator-mobile'),
-    statusDotMobile: document.getElementById('status-dot-mobile'),
-    locationTextMobile: document.getElementById('location-text-mobile'),
-    getLocationBtnMobile: document.getElementById('get-location-btn-mobile'),
-    locationBtnMobile: document.getElementById('location-btn-mobile'),
-    legendToggleBtn: document.getElementById('legend-toggle-btn'),
-    recenterBtn: document.getElementById('recenter-btn'),
-    fullscreenBtn: document.getElementById('fullscreen-btn'),
-    panelMobile: document.getElementById('info-panel-mobile'),
-    overlayMobile: document.getElementById('panel-overlay-mobile'),
-    panelTitleMobile: document.getElementById('panel-title-mobile'),
-    panelContentMobile: document.getElementById('panel-content-mobile'),
-    closePanelMobile: document.getElementById('close-panel-mobile')
+  // Camadas de mapa
+  var osm = L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    { maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }
+  );
+
+  var arcgisSat = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { 
+      maxZoom: 20, 
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+    }
+  );
+
+  // Usar ArcGIS World Imagery como padrão
+  arcgisSat.addTo(map);
+
+  var baseMaps = {
+    'Satélite ArcGIS (Alta Qualidade)': arcgisSat,
+    'Mapa de Rua OSM': osm
   };
 
-  // Inicializar mapa com tratamento de erro
-  function initializeMap() {
-    try {
-      map = L.map('map', {
-        center: mapCenter,
-        zoom: 17,
-        zoomControl: false,
-        zoomAnimation: true,
-        fadeAnimation: true,
-        maxZoom: 20,
-        minZoom: 16,
-        maxBounds: bounds,
-        maxBoundsViscosity: 1.0,
-        tap: false,
-        touchZoom: true,
-        scrollWheelZoom: false,
-        doubleClickZoom: true,
-        boxZoom: false,
-        keyboard: false
-      });
+  L.control.layers(baseMaps).addTo(map);
 
-      // Adicionar camada de satélite
-      const arcgisSat = L.tileLayer(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        { 
-          maxZoom: 20, 
-          attribution: 'Tiles &copy; Esri'
-        }
-      ).addTo(map);
+  // Variáveis globais
+  var currentPonto = null;
+  var userLocation = null;
+  var userMarker = null;
+  var userCircle = null;
+  var routingControl = null;
 
-      // Adicionar controle de zoom customizado para mobile
-      L.control.zoom({
-        position: 'bottomright'
-      }).addTo(map);
-
-      mapInitialized = true;
-      elements.loadingOverlay.style.display = 'none';
-      
-      // Adicionar pontos após o mapa estar pronto
-      setTimeout(addPointsToMap, 100);
-      
-    } catch (error) {
-      console.error('Erro ao inicializar mapa:', error);
-      showError('Erro ao carregar o mapa. Tente recarregar a página.');
-    }
-  }
-
-  // Mostrar mensagem de erro
-  function showError(message) {
-    elements.loadingOverlay.style.display = 'none';
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.innerHTML = `
-      <p>${message}</p>
-      <button class="retry-btn" onclick="window.location.reload()">Tentar Novamente</button>
-    `;
-    document.body.appendChild(errorDiv);
-  }
+  // Elementos da interface
+  var panel = document.getElementById('info-panel');
+  var overlay = document.getElementById('panel-overlay');
+  var panelTitle = document.getElementById('panel-title');
+  var panelContent = document.getElementById('panel-content');
+  var closeBtn = document.getElementById('close-panel');
+  var locationIndicator = document.getElementById('location-indicator');
+  var statusDot = document.getElementById('status-dot');
+  var locationText = document.getElementById('location-text');
+  var getLocationBtn = document.getElementById('get-location-btn');
 
   // Criar ícones coloridos
   function createIcon(type) {
-    const iconColors = {
-      'restaurante': '#3498db', 'piscina': '#2ecc71', 'recepcao': '#9b59b6',
-      'cabanas': '#f39c12', 'solar': '#1abc9c', 'lagoa': '#34495e',
-      'acesso': '#e67e22', 'campo': '#e84393', 'tenis': '#00b894'
+    var iconColors = {
+      'restaurante': '#3498db',
+      'piscina': '#2ecc71',
+      'recepcao': '#9b59b6',
+      'cabanas': '#f39c12',
+      'solar': '#1abc9c',
+      'lagoa': '#34495e',
+      'acesso': '#e67e22',
+      'campo': '#e84393',
+      'tenis': '#00b894'
     };
     
-    const iconLetters = {
-      'restaurante': 'R', 'piscina': 'P', 'recepcao': 'R', 'cabanas': 'C',
-      'solar': 'S', 'lagoa': 'L', 'acesso': 'A', 'campo': 'C', 'tenis': 'T'
+    var iconLetters = {
+      'restaurante': 'R',
+      'piscina': 'P',
+      'recepcao': 'R',
+      'cabanas': 'C',
+      'solar': 'S',
+      'lagoa': 'L',
+      'acesso': 'A',
+      'campo': 'C',
+      'tenis': 'T'
     };
     
     return L.divIcon({
       className: 'custom-div-icon',
-      html: `<div style="background: linear-gradient(135deg, ${iconColors[type]}, ${iconColors[type]}99); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4); font-size: 14px;">${iconLetters[type]}</div>`,
+      html: `<div style="background: linear-gradient(135deg, ${iconColors[type]}, ${iconColors[type]}99); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.4);">${iconLetters[type]}</div>`,
       iconSize: [36, 36],
       iconAnchor: [18, 18]
     });
   }
 
-  // Adicionar pontos ao mapa
-  function addPointsToMap() {
-    const pontosInteresse = [
-      {
-        nome: "Cabanas de Praia",
-        tipo: "cabanas",
-        coordenadas: [-27.602103, -48.437201],
-        descricao: "Cabanas exclusivas para hóspedes na beira da praia com vista privilegiada para o mar.",
-        horario: "Reserva necessária - 8h às 18h"
-      },
-      {
-        nome: "Restaurante Principal",
-        tipo: "restaurante",
-        coordenadas: [-27.601969, -48.436230],
-        descricao: "Desfrute de refeições deliciosas com vista para o mar. Culinária internacional e regional.",
-        horario: "Café: 7h-10h | Almoço: 12h-15h | Jantar: 19h-22h"
-      },
-      {
-        nome: "Recepção",
-        tipo: "recepcao",
-        coordenadas: [-27.60228, -48.43647],
-        descricao: "Central de atendimento 24h para check-in e informações turísticas.",
-        horario: "Atendimento 24 horas"
-      },
-      {
-        nome: "Piscina Externa",
-        tipo: "piscina",
-        coordenadas: [-27.60194, -48.43586],
-        descricao: "Piscina com vista panorâmica para o mar. Área completa de lazer.",
-        horario: "8h às 20h - Aquecida"
-      },
-      {
-        nome: "Acesso à Praia Mole",
-        tipo: "acesso",
-        coordenadas: [-27.602246, -48.435184],
-        descricao: "Acesso direto à famosa Praia Mole. Trilha pavimentada e segura.",
-        horario: "Acesso 24h para hóspedes"
-      }
-    ];
-
-    pontosInteresse.forEach(ponto => {
-      const marker = L.marker(ponto.coordenadas, {icon: createIcon(ponto.tipo)})
-        .addTo(map);
-      
-      marker.on('click', () => {
-        openInfoPanel(ponto);
-      });
-    });
-
-    // Adicionar área do hotel
-    const hotelArea = L.polygon([
-      [-27.601504, -48.439632],
-      [-27.601828, -48.435225],
-      [-27.602537, -48.435511],
-      [-27.602294, -48.439959]
-    ], {
-      color: '#E3B62E',
-      fillColor: '#f9f1d1',
-      fillOpacity: 0.2,
-      weight: 2
-    }).addTo(map).bindPopup('Área do Praia Mole Hotel');
-  }
-
   // Obter localização do usuário
   function getUserLocation() {
     if (!navigator.geolocation) {
-      elements.locationTextMobile.textContent = 'GPS não suportado';
+      locationText.textContent = 'Geolocalização não suportada';
       return;
     }
 
-    elements.locationTextMobile.textContent = 'Obtendo...';
-    elements.getLocationBtnMobile.disabled = true;
+    locationText.textContent = 'Obtendo localização...';
+    getLocationBtn.disabled = true;
 
     navigator.geolocation.getCurrentPosition(
-      position => {
-        userLocation = [position.coords.latitude, position.coords.longitude];
-        elements.statusDotMobile.classList.add('active');
-        elements.locationTextMobile.textContent = 'Localização ativa';
-        elements.getLocationBtnMobile.textContent = 'Atualizar';
-        elements.getLocationBtnMobile.disabled = false;
+      function(position) {
+        userLocation = [
+          position.coords.latitude,
+          position.coords.longitude
+        ];
+        
+        // Atualizar interface
+        statusDot.classList.add('active');
+        locationText.textContent = 'Localização ativa';
+        getLocationBtn.textContent = 'Atualizar Localização';
+        getLocationBtn.disabled = false;
+        
+        // Adicionar marcador da localização do usuário
         updateUserLocationMarker();
+        
+        // Centralizar no usuário
         map.setView(userLocation, 16);
       },
-      error => {
-        console.error('Erro GPS:', error);
-        elements.locationTextMobile.textContent = 'Erro de localização';
-        elements.getLocationBtnMobile.disabled = false;
+      function(error) {
+        console.error('Erro ao obter localização:', error);
+        locationText.textContent = 'Erro ao obter localização';
+        getLocationBtn.disabled = false;
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            locationText.textContent = 'Permissão negada';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            locationText.textContent = 'Localização indisponível';
+            break;
+          case error.TIMEOUT:
+            locationText.textContent = 'Tempo esgotado';
+            break;
+        }
       },
       {
         enableHighAccuracy: true,
@@ -935,39 +920,48 @@
     );
   }
 
-  // Atualizar marcador do usuário
+  // Atualizar marcador da localização do usuário
   function updateUserLocationMarker() {
-    if (userMarker) map.removeLayer(userMarker);
-    if (userCircle) map.removeLayer(userCircle);
+    // Remover marcadores anteriores
+    if (userMarker) {
+      map.removeLayer(userMarker);
+    }
+    if (userCircle) {
+      map.removeLayer(userCircle);
+    }
     
+    // Adicionar novo marcador
     userMarker = L.marker(userLocation, {
       icon: L.divIcon({
         className: 'user-location-marker',
-        html: `<div style="background: linear-gradient(135deg, #e74c3c, #c0392b); width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.4);"></div>`,
+        html: `<div style="background: linear-gradient(135deg, #e74c3c, #c0392b); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.4);">📍</div>`,
         iconSize: [28, 28],
         iconAnchor: [14, 14]
       })
-    }).addTo(map).bindPopup('Sua localização');
+    }).addTo(map).bindPopup('Sua localização atual');
     
+    // Adicionar círculo de precisão
     userCircle = L.circle(userLocation, {
       color: '#e74c3c',
       fillColor: '#e74c3c',
-      fillOpacity: 0.15,
-      radius: 30
+      fillOpacity: 0.2,
+      radius: 50
     }).addTo(map);
   }
 
   // Calcular rota
   function calculateRoute(destination) {
     if (!userLocation) {
-      alert('Ative sua localização primeiro.');
+      alert('Por favor, ative sua localização primeiro.');
       return;
     }
     
+    // Remover rota anterior se existir
     if (routingControl) {
       map.removeControl(routingControl);
     }
     
+    // Criar controle de roteamento
     routingControl = L.Routing.control({
       waypoints: [
         L.latLng(userLocation[0], userLocation[1]),
@@ -979,181 +973,346 @@
       show: true,
       collapsible: true,
       language: 'pt',
-      createMarker: () => null
+      placeholder: 'Digite um destino...',
+      createMarker: function(i, waypoint, n) {
+        if (i === 0) {
+          // Ponto de origem (usuário)
+          return L.marker(waypoint.latLng, {
+            icon: L.divIcon({
+              className: 'route-marker',
+              html: `<div style="background: linear-gradient(135deg, #e74c3c, #c0392b); width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
+              iconSize: [22, 22],
+              iconAnchor: [11, 11]
+            })
+          });
+        } else {
+          // Ponto de destino
+          return L.marker(waypoint.latLng, {
+            icon: L.divIcon({
+              className: 'route-marker',
+              html: `<div style="background: linear-gradient(135deg, #2ecc71, #27ae60); width: 22px; height: 22px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
+              iconSize: [22, 22],
+              iconAnchor: [11, 11]
+            })
+          });
+        }
+      },
+      lineOptions: {
+        styles: [
+          {
+            color: '#3498db',
+            opacity: 0.8,
+            weight: 6
+          }
+        ]
+      }
     }).addTo(map);
     
+    // Fechar painel após calcular rota
     closeInfoPanel();
   }
 
-  // Abrir painel de informações
+  // Centralizar no ponto
+  function centerOnPoint(coordenadas) {
+    map.setView(coordenadas, 18, { 
+      animate: true, 
+      duration: 1.0
+    });
+    
+    var highlightCircle = L.circle(coordenadas, {
+      color: '#E3B62E',
+      fillColor: '#f7d154',
+      fillOpacity: 0.3,
+      radius: 20
+    }).addTo(map);
+    
+    setTimeout(() => {
+      map.removeLayer(highlightCircle);
+    }, 2000);
+  }
+
+  // Função para abrir o painel lateral
   function openInfoPanel(ponto) {
     currentPonto = ponto;
-    elements.panelTitleMobile.textContent = ponto.nome;
+    panelTitle.textContent = ponto.nome;
     
-    const iconColors = {
-      'restaurante': '#3498db', 'piscina': '#2ecc71', 'recepcao': '#9b59b6',
-      'cabanas': '#f39c12', 'solar': '#1abc9c', 'lagoa': '#34495e',
-      'acesso': '#e67e22', 'campo': '#e84393', 'tenis': '#00b894'
+    var iconColors = {
+      'restaurante': '#3498db',
+      'piscina': '#2ecc71',
+      'recepcao': '#9b59b6',
+      'cabanas': '#f39c12',
+      'solar': '#1abc9c',
+      'lagoa': '#34495e',
+      'acesso': '#e67e22',
+      'campo': '#e84393',
+      'tenis': '#00b894'
     };
     
-    const iconLetters = {
-      'restaurante': 'R', 'piscina': 'P', 'recepcao': 'R', 'cabanas': 'C',
-      'solar': 'S', 'lagoa': 'L', 'acesso': 'A', 'campo': 'C', 'tenis': 'T'
+    var iconLetters = {
+      'restaurante': 'R',
+      'piscina': 'P',
+      'recepcao': 'R',
+      'cabanas': 'C',
+      'solar': 'S',
+      'lagoa': 'L',
+      'acesso': 'A',
+      'campo': 'C',
+      'tenis': 'T'
     };
     
-    elements.panelContentMobile.innerHTML = `
-      <div class="panel-icon-display-mobile">
-        <div class="panel-icon-large-mobile" style="background: linear-gradient(135deg, ${iconColors[ponto.tipo]}, ${iconColors[ponto.tipo]}99);">
+    panelContent.innerHTML = `
+      <div class="panel-icon-display">
+        <div class="panel-icon-large" style="background: linear-gradient(135deg, ${iconColors[ponto.tipo]}, ${iconColors[ponto.tipo]}99);">
           ${iconLetters[ponto.tipo]}
         </div>
       </div>
       
-      <div class="info-section-mobile">
-        <div class="info-label-mobile">Descrição</div>
-        <div class="info-content-mobile">${ponto.descricao}</div>
+      <div class="info-section">
+        <div class="info-label">Descrição</div>
+        <div class="info-content">${ponto.descricao}</div>
       </div>
       
-      <div class="info-section-mobile">
-        <div class="info-label-mobile">Horário</div>
-        <div class="info-hours-mobile">
-          <div class="info-content-mobile">${ponto.horario}</div>
+      <div class="info-section">
+        <div class="info-label">Horário de Funcionamento</div>
+        <div class="info-hours">
+          <div class="info-content">${ponto.horario}</div>
         </div>
       </div>
       
-      <div class="action-buttons-mobile">
-        <button class="location-btn-mobile" id="location-btn-panel">
+      <div class="info-section">
+        <div class="info-label">Coordenadas</div>
+        <div class="info-coordinates">
+          <div class="info-content">
+            Lat: ${ponto.coordenadas[0].toFixed(6)}<br>
+            Lng: ${ponto.coordenadas[1].toFixed(6)}
+          </div>
+        </div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="location-btn" id="location-btn">
           <i>📍</i> Centralizar no Mapa
         </button>
-        <button class="navigation-btn-mobile" id="navigation-btn-panel">
-          <i>🚗</i> Traçar Rota
+        <button class="navigation-btn" id="navigation-btn">
+          <i>🚗</i> Traçar Rota da Minha Localização
         </button>
       </div>
     `;
     
-    document.getElementById('location-btn-panel').addEventListener('click', () => {
-      map.setView(ponto.coordenadas, 18, { animate: true, duration: 1.0 });
-      closeInfoPanel();
+    // Adicionar eventos aos botões
+    document.getElementById('location-btn').addEventListener('click', function() {
+      centerOnPoint(ponto.coordenadas);
     });
     
-    document.getElementById('navigation-btn-panel').addEventListener('click', () => {
+    document.getElementById('navigation-btn').addEventListener('click', function() {
       calculateRoute(ponto.coordenadas);
     });
     
-    elements.overlayMobile.classList.add('active');
-    elements.panelMobile.classList.add('active');
+    overlay.classList.add('active');
+    panel.classList.add('active');
+    
+    // Ajustar visualização do mapa para o painel aberto
+    setTimeout(() => {
+      var pixelPoint = map.project(ponto.coordenadas, map.getZoom());
+      pixelPoint.y -= 150; // Ajuste para o painel na parte inferior
+      var newCenter = map.unproject(pixelPoint, map.getZoom());
+      map.setView(newCenter, map.getZoom(), { animate: true, duration: 0.5 });
+      map.invalidateSize();
+    }, 100);
   }
 
-  // Fechar painel
+  // Função para fechar o painel lateral
   function closeInfoPanel() {
-    elements.panelMobile.classList.remove('active');
-    elements.overlayMobile.classList.remove('active');
+    panel.classList.remove('active');
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 400);
   }
 
-  // Alternar tela cheia
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.error('Erro ao entrar em tela cheia:', err);
-      });
-      elements.fullscreenBtn.innerHTML = '⛶';
-    } else {
-      document.exitFullscreen();
-      elements.fullscreenBtn.innerHTML = '⛶';
+  // Adicionar pontos de interesse ao mapa
+  var pontosInteresse = [
+    {
+      nome: "Cabanas de Praia",
+      tipo: "cabanas",
+      coordenadas: [-27.602103, -48.437201],
+      descricao: "Cabanas exclusivas para hóspedes na beira da praia. Oferecemos um ambiente privativo e confortável com vista privilegiada para o mar. Cada cabana é equipada com espreguiçadeiras, guarda-sol e serviço de praia personalizado para uma experiência única.",
+      horario: "Reserva necessária - Disponível das 8h às 18h"
+    },
+    {
+      nome: "Restaurante Principal",
+      tipo: "restaurante",
+      coordenadas: [-27.601969254020066, -48.43622984723793],
+      descricao: "Desfrute de refeições deliciosas com vista para o mar. Nosso restaurante oferece culinária internacional e pratos regionais preparados com ingredientes frescos e locais. Ambiente climatizado com terraço ao ar livre e vista panorâmica.",
+      horario: "Café da manhã: 7h-10h | Almoço: 12h-15h | Jantar: 19h-22h"
+    },
+    {
+      nome: "Recepção",
+      tipo: "recepcao",
+      coordenadas: [-27.60228, -48.43647],
+      descricao: "Central de atendimento para check-in, informações turísticas e serviços de concierge. Nossa equipe multilíngue está sempre disponível para auxiliar com reservas, atividades locais e qualquer necessidade durante sua estadia no resort.",
+      horario: "Atendimento 24 horas - Equipe multilíngue disponível"
+    },
+    {
+      nome: "Piscina Externa",
+      tipo: "piscina",
+      coordenadas: [-27.60194, -48.43586],
+      descricao: "Piscina com vista panorâmica para o mar. Área de lazer completa com piscina aquecida, bar molhado, área infantil e deck com espreguiçadeiras. Perfeita para relaxar e contemplar o pôr do sol com toda a família.",
+      horario: "Aberta diariamente das 8h às 20h - Aquecida durante todo o ano"
+    },
+    {
+      nome: "Solar do Hotel",
+      tipo: "solar",
+      coordenadas: [-27.60183, -48.43867],
+      descricao: "Área com painéis solares para energia sustentável. Demonstra nosso compromisso com o meio ambiente através de energia limpa e renovável. Parte integral do nosso programa de sustentabilidade e responsabilidade ambiental.",
+      horario: "Visita guiada disponível às 15h - Agendamento na recepção"
+    },
+    {
+      nome: "Lagoa da Conceição",
+      tipo: "lagoa",
+      coordenadas: [-27.60211, -48.43969],
+      descricao: "Belíssima lagoa para passeios de barco e esportes aquáticos. Um dos cartões postais de Florianópolis, oferece atividades como stand up paddle, caiaque, windsurf e passeios de barco. Cercada por morros e vegetação nativa preservada.",
+      horario: "Acesso livre - Atividades aquáticas disponíveis das 9h às 17h"
+    },
+    {
+      nome: "Acesso à Praia Mole",
+      tipo: "acesso",
+      coordenadas: [-27.602246, -48.435184],
+      descricao: "Principal acesso direto à famosa Praia Mole a partir do hotel. Trilha pavimentada e segura que leva diretamente às areias douradas. A praia é conhecida mundialmente por suas ondas perfeitas para surf e beleza natural preservada.",
+      horario: "Acesso 24h para hóspedes - Trilha iluminada durante a noite"
+    },
+    {
+      nome: "Campo de Areia",
+      tipo: "campo",
+      coordenadas: [-27.601878, -48.438254],
+      descricao: "Campo de areia para prática de vôlei de praia e futevôlei. Espaço dedicado a atividades esportivas e recreação ao ar livre. Equipado com redes e iluminação noturna para jogos durante a noite.",
+      horario: "Acesso livre - Iluminação até as 22h"
+    },
+    {
+      nome: "Campo de Tênis",
+      tipo: "tenis",
+      coordenadas: [-27.601823, -48.437776],
+      descricao: "Quadra de tênis profissional para hóspedes. Superfície sintética de alta qualidade, equipada com iluminação noturna. Raquetes e bolas disponíveis para empréstimo na recepção.",
+      horario: "Das 7h às 22h - Reserva antecipada recomendada"
     }
-  }
+  ];
 
-  // Alternar legenda
-  function toggleLegend() {
-    elements.legendMobile.style.display = elements.legendMobile.style.display === 'none' ? 'block' : 'none';
-  }
+  // Armazenar marcadores para acesso pela legenda
+  var allMarkers = [];
 
-  // Recentralizar mapa
-  function recenterMap() {
-    if (userLocation) {
-      map.setView(userLocation, 16, { animate: true });
-    } else {
-      map.setView(mapCenter, 17, { animate: true });
-    }
-  }
-
-  // Event Listeners
-  function setupEventListeners() {
-    // Botões de controle
-    elements.getLocationBtnMobile.addEventListener('click', getUserLocation);
-    elements.locationBtnMobile.addEventListener('click', getUserLocation);
-    elements.legendToggleBtn.addEventListener('click', toggleLegend);
-    elements.recenterBtn.addEventListener('click', recenterMap);
-    elements.fullscreenBtn.addEventListener('click', toggleFullscreen);
+  // Adicionar marcadores ao mapa
+  pontosInteresse.forEach(function(ponto) {
+    var marker = L.marker(ponto.coordenadas, {icon: createIcon(ponto.tipo)})
+      .addTo(map);
     
-    // Painel
-    elements.closePanelMobile.addEventListener('click', closeInfoPanel);
-    elements.overlayMobile.addEventListener('click', closeInfoPanel);
-    
-    // Legenda
-    elements.minimizeBtnMobile.addEventListener('click', () => {
-      elements.legendMobile.style.display = 'none';
+    marker.on('click', function() {
+      openInfoPanel(ponto);
     });
     
-    // Itens da legenda
-    document.querySelectorAll('.legend-item-mobile').forEach(item => {
-      item.addEventListener('click', function() {
-        const tipo = this.getAttribute('data-type');
-        // Simular clique no marcador correspondente
-        map.eachLayer(layer => {
-          if (layer instanceof L.Marker && layer.options.icon?.options?.html?.includes(tipo)) {
-            layer.fire('click');
-          }
-        });
-      });
-    });
-    
-    // Tecla ESC para fechar painel
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        closeInfoPanel();
-        if (document.fullscreenElement) {
-          document.exitFullscreen();
-        }
-      }
-    });
-    
-    // Redimensionamento
-    window.addEventListener('resize', () => {
-      if (map) {
-        setTimeout(() => map.invalidateSize(), 100);
-      }
-    });
-    
-    // Fullscreen change
-    document.addEventListener('fullscreenchange', () => {
-      isFullscreen = !!document.fullscreenElement;
-      setTimeout(() => map.invalidateSize(), 100);
-    });
-  }
-
-  // Inicialização
-  document.addEventListener('DOMContentLoaded', () => {
-    initializeMap();
-    setupEventListeners();
-    
-    // Prevenir zoom duplo no mapa
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function (event) {
-      const now = (new Date()).getTime();
-      if (now - lastTouchEnd <= 300) {
-        event.preventDefault();
-      }
-      lastTouchEnd = now;
-    }, false);
+    allMarkers.push({ data: ponto, marker: marker });
   });
 
-  // Recarregar mapa se necessário
-  function reloadMap() {
-    if (map) {
-      map.remove();
+  // Adicionar eventos de clique aos itens da legenda
+  document.querySelectorAll('.legend-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var tipo = this.getAttribute('data-type');
+      var pontoEncontrado = allMarkers.find(m => m.data.tipo === tipo);
+      if (pontoEncontrado) {
+        openInfoPanel(pontoEncontrado.data);
+        map.setView(pontoEncontrado.data.coordenadas, 18, { animate: true, duration: 0.8 });
+      }
+    });
+  });
+
+  // Eventos para fechar o painel
+  closeBtn.addEventListener('click', closeInfoPanel);
+  overlay.addEventListener('click', closeInfoPanel);
+
+  // Evento para obter localização
+  getLocationBtn.addEventListener('click', getUserLocation);
+
+  // Fechar painel com tecla ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && panel.classList.contains('active')) {
+      closeInfoPanel();
     }
-    initializeMap();
+  });
+
+  // Adicionar a área específica do hotel
+  var hotelArea = L.polygon([
+    [-27.601504, -48.439632],
+    [-27.601828, -48.435225],
+    [-27.602537, -48.435511],
+    [-27.602294, -48.439959]
+  ], {
+    color: '#E3B62E',
+    fillColor: '#f9f1d1',
+    fillOpacity: 0.3,
+    weight: 2
+  }).addTo(map).bindPopup('Área do Praia Mole Hotel');
+
+  // Ajustar zoom para mostrar todos os marcadores
+  var group = new L.featureGroup(allMarkers.map(m => m.marker));
+  map.fitBounds(group.getBounds().pad(0.1));
+
+  // Função para minimizar/expandir a legenda
+  document.getElementById('minimize-btn').addEventListener('click', function() {
+    var legend = document.getElementById('legend');
+    var btn = document.getElementById('minimize-btn');
+    
+    if (legend.classList.contains('minimized')) {
+      legend.classList.remove('minimized');
+      btn.textContent = '−';
+      btn.title = 'Minimizar legenda';
+    } else {
+      legend.classList.add('minimized');
+      btn.textContent = '+';
+      btn.title = 'Expandir legenda';
+    }
+  });
+
+  // Ajustar layout inicial para mobile
+  function adjustLayoutForMobile() {
+    // Ajustar tamanho do mapa para preencher a tela
+    map.invalidateSize();
+    
+    // Ajustar posição dos controles para mobile
+    var legend = document.getElementById('legend');
+    var locationIndicator = document.getElementById('location-indicator');
+    
+    // Garantir que a legenda e o indicador de localização estejam posicionados corretamente
+    legend.style.bottom = '10px';
+    legend.style.left = '10px';
+    legend.style.right = '10px';
+    
+    locationIndicator.style.top = '10px';
+    locationIndicator.style.left = '10px';
+    locationIndicator.style.right = '10px';
   }
+
+  // Ajustar layout quando redimensionar
+  window.addEventListener('resize', function() {
+    adjustLayoutForMobile();
+    if (panel.classList.contains('active')) {
+      closeInfoPanel();
+    }
+  });
+  
+  // Ajustar layout inicial
+  setTimeout(adjustLayoutForMobile, 100);
+  
+  // Prevenir zoom com gesto de pinça em alguns navegadores móveis
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+  });
+  
+  document.addEventListener('gesturechange', function(e) {
+    e.preventDefault();
+  });
+  
+  document.addEventListener('gestureend', function(e) {
+    e.preventDefault();
+  });
 </script>
 </body>
 </html>
