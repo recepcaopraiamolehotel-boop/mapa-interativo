@@ -5,60 +5,170 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Praia Mole Hotel - Redirecionando</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #1a2e45 0%, #2c4a6e 50%, #E3B62E 100%);
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
             text-align: center;
+            overflow: hidden;
         }
+        
         .container {
-            background: rgba(26, 46, 69, 0.9);
-            padding: 40px;
-            border-radius: 15px;
-            border: 2px solid #E3B62E;
+            background: rgba(26, 46, 69, 0.95);
+            padding: 50px 40px;
+            border-radius: 20px;
+            border: 3px solid #E3B62E;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            max-width: 500px;
+            width: 90%;
+            backdrop-filter: blur(10px);
         }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #f7d154;
+            margin-bottom: 30px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            line-height: 1.3;
+        }
+        
+        .welcome-message {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .loading-message {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: #f7d154;
+            font-weight: 400;
+        }
+        
         .spinner {
             border: 4px solid rgba(227, 182, 46, 0.3);
             border-left: 4px solid #E3B62E;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
-            margin: 20px auto;
+            margin: 0 auto 20px auto;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        .hotel-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .device-info {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #bdc3c7;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🌴 Praia Mole Hotel</h1>
-        <p>Detectando seu dispositivo...</p>
+        <div class="hotel-icon">🌴</div>
+        <h1>Seja bem-vindo às<br>acomodações<br>Praia Mole Hotel</h1>
+        
+        <div class="welcome-message">
+            Estamos preparando sua experiência...
+        </div>
+        
+        <div class="loading-message">
+            Abrindo o mapa do hotel
+        </div>
+        
         <div class="spinner"></div>
-        <p>Redirecionando para a versão adequada</p>
+        
+        <div class="device-info" id="device-info">
+            Detectando seu dispositivo...
+        </div>
     </div>
 
     <script>
         // Detectar se é mobile
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || 
+                   (navigator.userAgent.indexOf('IEMobile') !== -1) ||
+                   (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
         }
         
-        // Redirecionar após 2 segundos
+        // Atualizar informação do dispositivo
+        function updateDeviceInfo() {
+            const deviceInfo = document.getElementById('device-info');
+            const isMobile = isMobileDevice();
+            
+            if (isMobile) {
+                deviceInfo.textContent = '📱 Versão Mobile - Otimizada para celular';
+            } else {
+                deviceInfo.textContent = '💻 Versão Desktop - Experiência completa';
+            }
+        }
+        
+        // Atualizar mensagem de carregamento
+        function updateLoadingMessage() {
+            const loadingMessages = [
+                "Carregando mapa interativo...",
+                "Preparando pontos de interesse...",
+                "Configurando sistema de navegação...",
+                "Quase pronto..."
+            ];
+            
+            let currentIndex = 0;
+            const loadingElement = document.querySelector('.loading-message');
+            
+            const interval = setInterval(() => {
+                loadingElement.textContent = loadingMessages[currentIndex];
+                currentIndex = (currentIndex + 1) % loadingMessages.length;
+            }, 1500);
+            
+            return interval;
+        }
+        
+        // Iniciar
+        updateDeviceInfo();
+        const messageInterval = updateLoadingMessage();
+        
+        // Redirecionar após 3 segundos
         setTimeout(function() {
-            if (isMobile()) {
+            clearInterval(messageInterval);
+            
+            if (isMobileDevice()) {
                 window.location.href = 'mobile.html';
             } else {
                 window.location.href = 'desktop.html';
             }
-        }, 2000);
+        }, 3000);
     </script>
 </body>
 </html>
