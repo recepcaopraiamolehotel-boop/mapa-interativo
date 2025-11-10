@@ -83,51 +83,6 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    position: relative;
-  }
-  
-  .map-controls {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    background: rgba(26, 46, 69, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 8px;
-    border-radius: 12px;
-    border: 1px solid rgba(227, 182, 46, 0.4);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  .size-control-btn {
-    background: rgba(227, 182, 46, 0.2);
-    color: #f7d154;
-    border: 1px solid rgba(227, 182, 46, 0.4);
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .size-control-btn:active {
-    background: rgba(227, 182, 46, 0.4);
-    transform: scale(0.95);
-  }
-  
-  .size-indicator {
-    color: #f7d154;
-    font-size: 0.7rem;
-    text-align: center;
-    margin-top: 2px;
-    font-weight: 600;
   }
   
   #map {
@@ -137,28 +92,6 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     border: 3px solid #E3B62E;
     overflow: hidden;
-    transition: all 0.3s ease;
-  }
-  
-  /* Estados de tamanho do mapa */
-  .map-small {
-    flex: 0.6;
-    min-height: 200px;
-  }
-  
-  .map-medium {
-    flex: 0.8;
-    min-height: 300px;
-  }
-  
-  .map-large {
-    flex: 1;
-    min-height: 400px;
-  }
-  
-  .map-extra-large {
-    flex: 1.2;
-    min-height: 500px;
   }
   
   .controls-section {
@@ -166,18 +99,6 @@
     flex-direction: column;
     gap: 10px;
     margin-top: 10px;
-    transition: all 0.3s ease;
-  }
-  
-  /* Ajustar controles quando mapa está grande */
-  .map-extra-large ~ .controls-section {
-    margin-top: 5px;
-    gap: 8px;
-  }
-  
-  .map-large ~ .controls-section {
-    margin-top: 8px;
-    gap: 9px;
   }
   
   .location-indicator {
@@ -189,7 +110,58 @@
     color: #ffffff;
     font-size: 14px;
     border: 1px solid rgba(227, 182, 46, 0.4);
-    transition: all 0.3s ease;
+  }
+  
+  .location-indicator h4 {
+    color: #f7d154;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .location-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e74c3c;
+  }
+  
+  .status-dot.active {
+    background: #2ecc71;
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  
+  .get-location-btn {
+    background: rgba(227, 182, 46, 0.2);
+    color: #f7d154;
+    border: 1px solid rgba(227, 182, 46, 0.4);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    font-weight: 500;
+  }
+  
+  .get-location-btn:active {
+    background: rgba(227, 182, 46, 0.3);
+    transform: scale(0.98);
   }
   
   .legend-section {
@@ -201,16 +173,6 @@
     border: 1px solid rgba(227, 182, 46, 0.4);
     max-height: 200px;
     overflow-y: auto;
-    transition: all 0.3s ease;
-  }
-  
-  /* Ajustar altura da legenda quando mapa está pequeno */
-  .map-small ~ .controls-section .legend-section {
-    max-height: 150px;
-  }
-  
-  .map-medium ~ .controls-section .legend-section {
-    max-height: 180px;
   }
   
   .legend-section h4 {
@@ -274,58 +236,6 @@
   .legend-icon.acesso { background: linear-gradient(135deg, #e67e22, #d35400); }
   .legend-icon.campo { background: linear-gradient(135deg, #e84393, #fd79a8); }
   .legend-icon.tenis { background: linear-gradient(135deg, #00b894, #00cec9); }
-  
-  .location-indicator h4 {
-    color: #f7d154;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .location-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #e74c3c;
-  }
-  
-  .status-dot.active {
-    background: #2ecc71;
-    animation: pulse 2s infinite;
-  }
-  
-  @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-  }
-  
-  .get-location-btn {
-    background: rgba(227, 182, 46, 0.2);
-    color: #f7d154;
-    border: 1px solid rgba(227, 182, 46, 0.4);
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    width: 100%;
-    font-weight: 500;
-  }
-  
-  .get-location-btn:active {
-    background: rgba(227, 182, 46, 0.3);
-    transform: scale(0.98);
-  }
   
   .footer {
     text-align: center;
@@ -579,7 +489,6 @@
     .panel-content { padding: 15px; }
     .action-buttons { gap: 8px; }
     .location-btn, .navigation-btn { padding: 12px 16px; font-size: 0.85rem; }
-    .map-controls { top: 5px; right: 5px; }
   }
   
   /* Handle landscape orientation */
@@ -587,10 +496,6 @@
     .main-container { height: calc(100vh - 100px); }
     .legend-section { max-height: 120px; }
     .info-panel { height: 85vh; }
-    .map-small { flex: 0.5; }
-    .map-medium { flex: 0.7; }
-    .map-large { flex: 0.9; }
-    .map-extra-large { flex: 1.1; }
   }
 </style>
 </head>
@@ -602,12 +507,7 @@
   
   <div class="main-container">
     <div class="map-section">
-      <div id="map" class="map-extra-large"></div>
-      <div class="map-controls">
-        <button class="size-control-btn" id="decrease-size" title="Diminuir mapa">−</button>
-        <div class="size-indicator" id="size-indicator">Grande</div>
-        <button class="size-control-btn" id="increase-size" title="Aumentar mapa">+</button>
-      </div>
+      <div id="map"></div>
     </div>
     
     <div class="controls-section">
@@ -703,7 +603,7 @@
     minZoom: 16,
     maxBounds: bounds,
     maxBoundsViscosity: 1.0,
-    tap: false,
+    tap: false, // Melhorar compatibilidade com touch
     dragging: true
   });
 
@@ -713,7 +613,7 @@
     { 
       maxZoom: 19, 
       attribution: '&copy; OpenStreetMap contributors',
-      detectRetina: true
+      detectRetina: true // Melhor qualidade em displays retina
     }
   );
 
@@ -735,7 +635,7 @@
   };
 
   L.control.layers(baseMaps, null, {
-    collapsed: false,
+    collapsed: false, // Sempre expandido em mobile
     position: 'topright'
   }).addTo(map);
 
@@ -744,7 +644,6 @@
   var userLocation = null;
   var userMarker = null;
   var userCircle = null;
-  var currentMapSize = 'extra-large'; // Tamanho inicial grande
 
   // Elementos da interface
   var panel = document.getElementById('info-panel');
@@ -756,55 +655,6 @@
   var statusDot = document.getElementById('status-dot');
   var locationText = document.getElementById('location-text');
   var getLocationBtn = document.getElementById('get-location-btn');
-  var increaseSizeBtn = document.getElementById('increase-size');
-  var decreaseSizeBtn = document.getElementById('decrease-size');
-  var sizeIndicator = document.getElementById('size-indicator');
-
-  // Sistema de controle de tamanho do mapa
-  const mapSizes = ['small', 'medium', 'large', 'extra-large'];
-  const sizeLabels = {
-    'small': 'Pequeno',
-    'medium': 'Médio', 
-    'large': 'Grande',
-    'extra-large': 'Extra Grande'
-  };
-
-  function changeMapSize(direction) {
-    const currentIndex = mapSizes.indexOf(currentMapSize);
-    let newIndex;
-    
-    if (direction === 'increase' && currentIndex < mapSizes.length - 1) {
-      newIndex = currentIndex + 1;
-    } else if (direction === 'decrease' && currentIndex > 0) {
-      newIndex = currentIndex - 1;
-    } else {
-      return; // Limite alcançado
-    }
-    
-    // Remover classe atual
-    map.classList.remove('map-' + currentMapSize);
-    
-    // Adicionar nova classe
-    currentMapSize = mapSizes[newIndex];
-    map.classList.add('map-' + currentMapSize);
-    
-    // Atualizar indicador
-    sizeIndicator.textContent = sizeLabels[currentMapSize];
-    
-    // Revalidar tamanho do mapa após transição
-    setTimeout(() => {
-      map.invalidateSize();
-    }, 300);
-  }
-
-  // Eventos para controle de tamanho
-  increaseSizeBtn.addEventListener('click', function() {
-    changeMapSize('increase');
-  });
-
-  decreaseSizeBtn.addEventListener('click', function() {
-    changeMapSize('decrease');
-  });
 
   // Criar ícones coloridos otimizados para mobile
   function createIcon(type) {
