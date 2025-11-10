@@ -426,14 +426,6 @@
     border-left: 4px solid #E3B62E;
   }
   
-  .info-coordinates {
-    background: rgba(52, 73, 94, 0.3);
-    padding: 15px;
-    border-radius: 10px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.85rem;
-  }
-  
   /* BOTÕES DE AÇÃO */
   .action-buttons {
     display: flex;
@@ -825,7 +817,6 @@
   var userLocation = null;
   var userMarker = null;
   var userCircle = null;
-  var routingControl = null;
 
   // Elementos da interface
   var panel = document.getElementById('info-panel');
@@ -955,67 +946,22 @@
     }).addTo(map);
   }
 
-  // Calcular rota
-  function calculateRoute(destination) {
+  // Abrir Google Maps com direções para o ponto exato
+  function openGoogleMapsDirections(destination, destinationName) {
     if (!userLocation) {
       alert('Por favor, ative sua localização primeiro.');
       return;
     }
     
-    // Remover rota anterior se existir
-    if (routingControl) {
-      map.removeControl(routingControl);
-    }
+    // Formatar coordenadas para URL do Google Maps
+    var origin = `${userLocation[0]},${userLocation[1]}`;
+    var destinationCoords = `${destination[0]},${destination[1]}`;
     
-    // Criar controle de roteamento
-    routingControl = L.Routing.control({
-      waypoints: [
-        L.latLng(userLocation[0], userLocation[1]),
-        L.latLng(destination[0], destination[1])
-      ],
-      routeWhileDragging: false,
-      showAlternatives: false,
-      fitSelectedRoutes: true,
-      show: true,
-      collapsible: true,
-      language: 'pt',
-      placeholder: 'Digite um destino...',
-      createMarker: function(i, waypoint, n) {
-        if (i === 0) {
-          // Ponto de origem (usuário)
-          return L.marker(waypoint.latLng, {
-            icon: L.divIcon({
-              className: 'route-marker',
-              html: `<div style="background: linear-gradient(135deg, #e74c3c, #c0392b); width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
-              iconSize: [20, 20],
-              iconAnchor: [10, 10]
-            })
-          });
-        } else {
-          // Ponto de destino
-          return L.marker(waypoint.latLng, {
-            icon: L.divIcon({
-              className: 'route-marker',
-              html: `<div style="background: linear-gradient(135deg, #2ecc71, #27ae60); width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
-              iconSize: [20, 20],
-              iconAnchor: [10, 10]
-            })
-          });
-        }
-      },
-      lineOptions: {
-        styles: [
-          {
-            color: '#3498db',
-            opacity: 0.8,
-            weight: 6
-          }
-        ]
-      }
-    }).addTo(map);
+    // Criar URL do Google Maps com direções para coordenadas exatas
+    var googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destinationCoords}&destination_place_id=&travelmode=walking`;
     
-    // Fechar painel após calcular rota
-    closeInfoPanel();
+    // Abrir em uma nova aba
+    window.open(googleMapsUrl, '_blank');
   }
 
   // Centralizar no ponto
@@ -1085,22 +1031,12 @@
         </div>
       </div>
       
-      <div class="info-section">
-        <div class="info-label">Coordenadas</div>
-        <div class="info-coordinates">
-          <div class="info-content">
-            Lat: ${ponto.coordenadas[0].toFixed(6)}<br>
-            Lng: ${ponto.coordenadas[1].toFixed(6)}
-          </div>
-        </div>
-      </div>
-      
       <div class="action-buttons">
         <button class="location-btn" id="location-btn">
           <i>📍</i> Centralizar no Mapa
         </button>
         <button class="navigation-btn" id="navigation-btn">
-          <i>🚗</i> Traçar Rota da Minha Localização
+          <i>🚗</i> Traçar Rota no Google Maps
         </button>
       </div>
     `;
@@ -1111,7 +1047,7 @@
     });
     
     document.getElementById('navigation-btn').addEventListener('click', function() {
-      calculateRoute(ponto.coordenadas);
+      openGoogleMapsDirections(ponto.coordenadas, ponto.nome);
     });
     
     overlay.classList.add('active');
